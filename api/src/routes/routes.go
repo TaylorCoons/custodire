@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/TaylorCoons/custodire/api/src/requestcontext"
@@ -27,7 +26,6 @@ var Routes []server.Route = []server.Route{
 }
 
 func CreateUser(ctx context.Context, w http.ResponseWriter, r *http.Request, p server.PathParams) {
-	fmt.Println("This called 1")
 	val := ctx.Value(requestcontext.Key)
 	if val == nil {
 		// TODO: Log & Return 500

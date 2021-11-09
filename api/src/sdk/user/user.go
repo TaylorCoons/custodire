@@ -35,7 +35,6 @@ func CreateUser(db *sql.DB, user UserModelInput) error {
 	if results.Next() {
 		return &UserExistsError{user.Username}
 	}
-	fmt.Println("This called 2")
 	_, err = db.Query(
 		`
 			INSERT INTO users (username, password_hash) VALUES (?, ?);
