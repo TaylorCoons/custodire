@@ -39,7 +39,9 @@ func CreateUser(ctx context.Context, w http.ResponseWriter, r *http.Request, p s
 		return
 	}
 	userInput := user.UserModelInput{}
-	err := json.NewDecoder(r.Body).Decode(&userInput)
+	decoder := json.NewDecoder(r.Body)
+	decoder.DisallowUnknownFields()
+	err := decoder.Decode(&userInput)
 	if err != nil {
 		di.Logger.Info(fmt.Sprintf("unable to demarshal user data: %s", err.Error()))
 		http.Error(w, "Unable to demarshal user data. Check the request JSON.", http.StatusBadRequest)
