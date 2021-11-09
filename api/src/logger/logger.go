@@ -20,10 +20,10 @@ func New(fileName string) (*Logger, error) {
 	}
 	writer := io.MultiWriter(os.Stdout, logFile)
 	var logger Logger = Logger{
-		DebugLogger: log.New(writer, "[custodire][DEBUG]", log.Ldate|log.Ltime|log.Lshortfile),
-		InfoLogger:  log.New(writer, "[custodire][INFO]", log.Ldate|log.Ltime|log.Lshortfile),
-		WarnLogger:  log.New(writer, "[custodire][WARN]", log.Ldate|log.Ltime|log.Lshortfile),
-		ErrorLogger: log.New(writer, "[custodire][ERROR]", log.Ldate|log.Ltime|log.Lshortfile),
+		DebugLogger: log.New(writer, "[custodire][DEBUG] ", log.Ldate|log.Ltime|log.Lshortfile),
+		InfoLogger:  log.New(writer, "[custodire][INFO] ", log.Ldate|log.Ltime|log.Lshortfile),
+		WarnLogger:  log.New(writer, "[custodire][WARN] ", log.Ldate|log.Ltime|log.Lshortfile),
+		ErrorLogger: log.New(writer, "[custodire][ERROR] ", log.Ldate|log.Ltime|log.Lshortfile),
 	}
 	return &logger, nil
 }
