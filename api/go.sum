@@ -1,2 +1,6 @@
 github.com/TaylorCoons/gorouter v0.0.0-20211109023536-4c2fcb8d02b6 h1:lgLRWAsTHw2XFAFO6L9ub58A+aMr3i89ymYr+7Mc4TU=
 github.com/TaylorCoons/gorouter v0.0.0-20211109023536-4c2fcb8d02b6/go.mod h1:jXjJSb5x6SsEOCtYNnaeW1WXAhNWvIZo1N6P+6p0jqY=
+github.com/TaylorCoons/gorouter v0.0.0-20211109041146-4957b1a3e3c4 h1:HlYtKVeWHD7NQiNBOkCqQ25kbxqaeMOgvwweOnN0F2A=
+github.com/TaylorCoons/gorouter v0.0.0-20211109041146-4957b1a3e3c4/go.mod h1:jXjJSb5x6SsEOCtYNnaeW1WXAhNWvIZo1N6P+6p0jqY=
+github.com/go-sql-driver/mysql v1.6.0 h1:BCTh4TKNUYmOmMUcQ3IipzF5prigylS7XXjEkfCHuOE=
+github.com/go-sql-driver/mysql v1.6.0/go.mod h1:DCzpHaOWr8IXmIStZouvnhqoel9Qv2LBy8hT2VhHyBg=

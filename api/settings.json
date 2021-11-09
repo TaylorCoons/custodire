@@ -1,0 +1,9 @@
+{
+    "port": "8080",
+    "dbConnection": {
+        "username": "user",
+        "password": "password",
+        "host": "loopback",
+        "database": "schema"
+    }
+}
