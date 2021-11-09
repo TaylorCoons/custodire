@@ -3,10 +3,16 @@ package settings
 import (
 	"os"
 	"testing"
+
+	"github.com/TaylorCoons/custodire/api/src/logger"
 )
 
 func TestParseSettings(t *testing.T) {
-	settings := ParseSettings("../../settings.json")
+	logger, err := logger.New("/dev/null")
+	if err != nil {
+		panic(err.Error())
+	}
+	settings := ParseSettings(logger, "../../settings.json")
 	if settings.DbConnection.Username != "user" {
 		t.Error("Failed to parse db username")
 	}

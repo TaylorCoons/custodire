@@ -109,3 +109,16 @@ func TestLoggerErrorStamp(t *testing.T) {
 	}
 	CleanTestFile(testLogFile)
 }
+
+func TestLoggerFatalStamp(t *testing.T) {
+	ClearTestLogFile(testLogFile)
+	logger, err := New(testLogFile)
+	if err != nil {
+		t.Error("Failed to open log file")
+	}
+	logger.Fatal("Test Log")
+	if contains := CheckFileContains(testLogFile, "[FATAL]"); !contains {
+		t.Error("Failed to stamp message with fatal")
+	}
+	CleanTestFile(testLogFile)
+}

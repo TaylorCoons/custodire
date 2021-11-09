@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/TaylorCoons/custodire/api/src/logger"
 )
 
 type DBConnectionSettings struct {
@@ -19,24 +21,27 @@ type AppSettings struct {
 	Port         string               `json:"port"`
 }
 
-func GetSettings() AppSettings {
+func GetSettings(logger *logger.Logger) AppSettings {
 	env := GetEnvironment()
 	file := GetSettingsFile(env)
-	return ParseSettings(file)
+	return ParseSettings(logger, file)
 }
 
-func ParseSettings(file string) AppSettings {
+func ParseSettings(logger *logger.Logger, file string) AppSettings {
 	settingsFile, err := os.Open(file)
 	if err != nil {
+		logger.Fatal(err.Error())
 		panic(err.Error())
 	}
 	rawData, err := ioutil.ReadAll(settingsFile)
 	if err != nil {
+		logger.Fatal(err.Error())
 		panic(err.Error())
 	}
 	var settings AppSettings
 	err = json.Unmarshal(rawData, &settings)
 	if err != nil {
+		logger.Fatal(err.Error())
 		panic(err.Error())
 	}
 	return settings
