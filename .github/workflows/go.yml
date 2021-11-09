@@ -13,9 +13,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: Build API
-      run: cd api
-
     - name: Set up Go
       uses: actions/setup-go@v2
       with:
@@ -23,6 +20,8 @@ jobs:
 
     - name: Build
       run: go build -v ./...
+      working-directory: api
 
     - name: Test
       run: go test -v ./... 
+      working-directory: api
