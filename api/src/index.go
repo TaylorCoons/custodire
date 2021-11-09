@@ -7,6 +7,7 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
+	"github.com/TaylorCoons/custodire/api/src/dbstartup"
 	"github.com/TaylorCoons/custodire/api/src/routes"
 	"github.com/TaylorCoons/custodire/api/src/settings"
 
@@ -17,6 +18,7 @@ func main() {
 	var appSettings settings.AppSettings = settings.GetSettings()
 	db := OpenConnectionPool(appSettings)
 	defer db.Close()
+	InitializeDatabase(db)
 	startServer(appSettings, db)
 }
 
@@ -33,6 +35,13 @@ func OpenConnectionPool(appSettings settings.AppSettings) *sql.DB {
 		panic(err.Error())
 	}
 	return db
+}
+
+func InitializeDatabase(db *sql.DB) {
+	err := dbstartup.InitializeTables(db)
+	if err != nil {
+		panic(err.Error())
+	}
 }
 
 func startServer(appSettings settings.AppSettings, db *sql.DB) {
