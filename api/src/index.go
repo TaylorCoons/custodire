@@ -55,13 +55,17 @@ func InitializeDatabase(logger *logger.Logger, db *sql.DB) {
 
 func startServer(logger *logger.Logger, appSettings settings.AppSettings, db *sql.DB) {
 	compiledRoutes := server.CompileRoutes(routes.Routes)
-	var dbInjector server.MiddlewareFunc = func(w http.ResponseWriter, r *http.Request, p server.PathParams, h server.HandlerFunc) {
-		ctx := context.WithValue(context.Background(), requestcontext.Ctx(requestcontext.Key), db)
+	var diInjector server.MiddlewareFunc = func(w http.ResponseWriter, r *http.Request, p server.PathParams, h server.HandlerFunc) {
+		var rCtx requestcontext.Data = requestcontext.Data{
+			Logger: logger,
+			Db:     db,
+		}
+		ctx := context.WithValue(context.Background(), requestcontext.Ctx(requestcontext.Key), rCtx)
 		h(ctx, w, r, p)
 	}
 	server := server.Server{
 		CompiledRoutes: compiledRoutes,
-		Middleware:     dbInjector,
+		Middleware:     diInjector,
 	}
 	bind := fmt.Sprintf(":%s", appSettings.Port)
 	logger.Info(fmt.Sprintf("Listening on port: %s", appSettings.Port))

@@ -2,10 +2,10 @@ package routes
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
-	"errors"
+	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/TaylorCoons/custodire/api/src/requestcontext"
 	"github.com/TaylorCoons/custodire/api/src/sdk/user"
@@ -28,26 +28,34 @@ var Routes []server.Route = []server.Route{
 func CreateUser(ctx context.Context, w http.ResponseWriter, r *http.Request, p server.PathParams) {
 	val := ctx.Value(requestcontext.Key)
 	if val == nil {
-		// TODO: Log & Return 500
-		panic(errors.New("couldn't find context. "))
+		fmt.Fprintln(os.Stderr, "coulnd't find context.")
+		http.Error(w, "Internal Error. Please check server logs.", http.StatusInternalServerError)
+		return
 	}
-	db, ok := val.(*sql.DB)
+	di, ok := val.(requestcontext.Data)
 	if !ok {
-		// TODO: Log & Return 500
-		panic(errors.New("couldn't cast context. "))
+		fmt.Fprintln(os.Stderr, "couldn't cast context.")
+		http.Error(w, "Internal Error. Please check server logs.", http.StatusInternalServerError)
+		return
 	}
 	userInput := user.UserModelInput{}
 	err := json.NewDecoder(r.Body).Decode(&userInput)
 	if err != nil {
-		// TODO: Log & Return 500
-		panic(err.Error())
+		di.Logger.Info(fmt.Sprintf("unable to demarshal user data: %s", err.Error()))
+		http.Error(w, "Unable to demarshal user data. Check the request JSON.", http.StatusBadRequest)
+		return
 	}
-	err = user.CreateUser(db, userInput)
+	err = user.CreateUser(di.Db, userInput)
 	if err != nil {
-		// TODO: Log & Return appropriate error
-		panic(err.Error())
+		if _, ok := err.(*user.UserExistsError); ok {
+			di.Logger.Info(fmt.Sprintf("username: %s already exists.", userInput.Username))
+			http.Error(w, "Username already exists", http.StatusConflict)
+			return
+		}
+		di.Logger.Error("Failed to create user")
+		http.Error(w, "Internal Error. Please check server logs.", http.StatusInternalServerError)
+		return
 	}
-
 }
 
 func DeleteUser(ctx context.Context, w http.ResponseWriter, r *http.Request, p server.PathParams) {
