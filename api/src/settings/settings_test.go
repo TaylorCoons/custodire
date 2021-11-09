@@ -6,7 +6,7 @@ import (
 )
 
 func TestParseSettings(t *testing.T) {
-	settings := ParseSettings("../settings.json")
+	settings := ParseSettings("../../settings.json")
 	if settings.DbConnection.Username != "user" {
 		t.Error("Failed to parse db username")
 	}

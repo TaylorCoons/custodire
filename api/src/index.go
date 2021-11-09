@@ -7,8 +7,8 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 
-	"github.com/TaylorCoons/custodire/api/routes"
-	"github.com/TaylorCoons/custodire/api/settings"
+	"github.com/TaylorCoons/custodire/api/src/routes"
+	"github.com/TaylorCoons/custodire/api/src/settings"
 
 	server "github.com/TaylorCoons/gorouter"
 )
