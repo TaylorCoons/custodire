@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 
 	"github.com/TaylorCoons/custodire/api/src/dbstartup"
+	"github.com/TaylorCoons/custodire/api/src/requestcontext"
 	"github.com/TaylorCoons/custodire/api/src/routes"
 	"github.com/TaylorCoons/custodire/api/src/settings"
 
@@ -46,7 +48,14 @@ func InitializeDatabase(db *sql.DB) {
 
 func startServer(appSettings settings.AppSettings, db *sql.DB) {
 	compiledRoutes := server.CompileRoutes(routes.Routes)
-	server := server.Server{CompiledRoutes: compiledRoutes}
+	var dbInjector server.MiddlewareFunc = func(w http.ResponseWriter, r *http.Request, p server.PathParams, h server.HandlerFunc) {
+		ctx := context.WithValue(context.Background(), requestcontext.Ctx(requestcontext.Key), db)
+		h(ctx, w, r, p)
+	}
+	server := server.Server{
+		CompiledRoutes: compiledRoutes,
+		Middleware:     dbInjector,
+	}
 	bind := fmt.Sprintf(":%s", appSettings.Port)
 	fmt.Printf("[custodire] Listening on port: %s", appSettings.Port)
 	err := http.ListenAndServe(bind, server)

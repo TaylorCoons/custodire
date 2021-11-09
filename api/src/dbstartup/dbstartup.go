@@ -26,7 +26,7 @@ func InitializeUsers(db *sql.DB) error {
 		CREATE TABLE IF NOT EXISTS users (
 			user_id INT AUTO_INCREMENT PRIMARY KEY,
 			username VARCHAR(255) NOT NULL,
-			password VARCHAR(512) NOT NULL 
+			password_hash VARCHAR(512) NOT NULL 
 		);
 		`,
 	)
