@@ -2,7 +2,6 @@ package user
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 )
 
@@ -12,16 +11,24 @@ type UserModelInput struct {
 	Hash     string `json:"hash"`
 }
 
+// TODO: Move these errors to their own file
 type UserExistsError struct {
 	User string
 }
 
 func (uee *UserExistsError) Error() string {
-	return fmt.Sprintf("user: %s already exists. ", uee.User)
+	return fmt.Sprintf("user: %s already exists", uee.User)
+}
+
+type UserDoesNotExistError struct {
+	User string
+}
+
+func (udne *UserDoesNotExistError) Error() string {
+	return fmt.Sprintf("user: %s does not exist", udne.User)
 }
 
 func CreateUser(db *sql.DB, user UserModelInput) error {
-	// TODO: Check user exists
 	results, err := db.Query(
 		`
 		SELECT user_id FROM users WHERE username=?
@@ -48,7 +55,28 @@ func CreateUser(db *sql.DB, user UserModelInput) error {
 	return nil
 }
 
-func DeleteUser(db *sql.DB, user UserModelInput) error {
-	// TODO: Delete user
-	return errors.New("not implimented")
+func DeleteUser(db *sql.DB, username string) error {
+	results, err := db.Query(
+		`
+		SELECT user_id FROM users WHERE username=?
+		`,
+		username,
+	)
+	if err != nil {
+		return err
+	}
+	defer results.Close()
+	if !results.Next() {
+		return &UserDoesNotExistError{username}
+	}
+	_, err = db.Query(
+		`
+			DELETE FROM users WHERE username=?
+		`,
+		username,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
 }
